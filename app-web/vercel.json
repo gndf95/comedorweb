@@ -3,7 +3,7 @@
   "regions": ["iad1"],
   "functions": {
     "app/api/**/*.ts": {
-      "runtime": "@vercel/node@latest"
+      "runtime": "nodejs20.x"
     }
   },
   "headers": [
