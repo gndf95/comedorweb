@@ -20,13 +20,15 @@
 
 Configurar en Vercel Dashboard → Project Settings → Environment Variables:
 
-#### 🔧 Supabase (REQUERIDO)
+#### 🔧 Supabase (CONFIGURADO)
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-DATABASE_URL=postgresql://postgres:password@db.project-id.supabase.co:5432/postgres
+NEXT_PUBLIC_SUPABASE_URL=https://unigberekthjkrgmjxjs.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuaWdiZXJla3RoamtyZ21qeGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNDQxMTIsImV4cCI6MjA3MTcyMDExMn0.My2wStrK2Q_OfV2MyBNwvwiahiNd7go6rFL0_EJsfgM
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuaWdiZXJla3RoamtyZ21qeGpzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjE0NDExMiwiZXhwIjoyMDcxNzIwMTEyfQ.mLDqZeWET2Lhc2udN4TEtVJfdlusnYA2ZdgjWKVhO-o
+DATABASE_URL=postgresql://postgres:[YOUR-DB-PASSWORD]@db.unigberekthjkrgmjxjs.supabase.co:5432/postgres
 ```
+
+> ⚠️ **IMPORTANTE**: Cambia `[YOUR-DB-PASSWORD]` por tu contraseña real de la base de datos de Supabase
 
 #### 🌐 Aplicación
 ```env
@@ -81,12 +83,18 @@ npm install -g supabase
 # Login a Supabase
 supabase login
 
-# Conectar al proyecto
-supabase link --project-ref your-project-id
+# Conectar al proyecto (ID: unigberekthjkrgmjxjs)
+supabase link --project-ref unigberekthjkrgmjxjs
 
-# Aplicar migraciones
+# Aplicar migraciones (desde el directorio app-web/)
+cd app-web
 supabase db push
 ```
+
+**Alternativamente**, puedes aplicar las migraciones manualmente en el Dashboard de Supabase:
+1. Ve a https://supabase.com/dashboard/project/unigberekthjkrgmjxjs/sql/new
+2. Copia y ejecuta el contenido de `app-web/supabase/migrations/001_initial_migration.sql`
+3. Luego ejecuta `app-web/supabase/migrations/002_rls_policies.sql`
 
 ### 4. Deploy Steps
 
