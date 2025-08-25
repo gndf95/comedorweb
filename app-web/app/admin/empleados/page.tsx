@@ -82,7 +82,7 @@ export default function GestionEmpleados() {
     email: '',
     telefono: '',
     departamento: '',
-    tipo_usuario: 'empleado' as 'empleado' | 'externo'
+    tipo_usuario: 'empleado' as 'empleado' | 'externo' | 'admin'
   })
 
   useEffect(() => {
@@ -505,7 +505,7 @@ export default function GestionEmpleados() {
                                           email: empleado.email || '',
                                           telefono: empleado.telefono || '',
                                           departamento: empleado.departamento || '',
-                                          tipo_usuario: empleado.tipo_usuario
+                                          tipo_usuario: empleado.tipo_usuario === 'admin' ? 'empleado' : empleado.tipo_usuario
                                         })
                                         setMostrarFormulario(true)
                                       }}

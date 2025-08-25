@@ -36,7 +36,7 @@ export async function GET() {
     console.error('Error en test:', error)
     return NextResponse.json({ 
       success: false,
-      error: error.message 
+      error: error instanceof Error ? error.message : 'Error desconocido'
     }, { status: 500 })
   }
 }

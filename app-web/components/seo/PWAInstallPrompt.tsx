@@ -20,11 +20,13 @@ export function PWAInstallPrompt() {
   const handleDismiss = () => {
     setDismissed(true)
     // Recordar que el usuario rechazó la instalación
-    localStorage.setItem('pwa-install-dismissed', 'true')
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('pwa-install-dismissed', 'true')
+    }
   }
 
   // No mostrar si ya fue rechazado anteriormente
-  if (localStorage.getItem('pwa-install-dismissed') === 'true') {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('pwa-install-dismissed') === 'true') {
     return null
   }
 

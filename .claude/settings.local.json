@@ -5,7 +5,11 @@
       "Bash(npm install:*)",
       "Bash(curl:*)",
       "Bash(npm run migrar:datos:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm run type-check:*)"
     ],
     "deny": [],
     "ask": []

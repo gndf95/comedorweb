@@ -131,6 +131,9 @@ export const statisticsCache = new MemoryCache({
   maxSize: 100 
 })
 
+// Caché de memoria general (alias para apiCache)
+export const memoryCache = apiCache
+
 // Funciones auxiliares para caché
 export function getCacheKey(...parts: (string | number)[]): string {
   return parts.join(':')

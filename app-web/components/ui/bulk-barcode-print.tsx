@@ -15,9 +15,9 @@ interface Empleado {
   codigo: string
   nombre: string
   apellidos: string
-  departamento?: string
+  departamento?: string | null
   activo: boolean
-  tipo_usuario: 'empleado' | 'externo'
+  tipo_usuario: 'empleado' | 'externo' | 'admin'
 }
 
 interface BulkBarcodePrintProps {

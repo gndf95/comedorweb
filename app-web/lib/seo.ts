@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 export interface SEOProps {
   title?: string
   description?: string
-  keywords?: string[]
+  keywords?: readonly string[] | string[]
   image?: string
   url?: string
   type?: 'website' | 'article'
@@ -54,7 +54,7 @@ export function generateMetadata({
   return {
     title: fullTitle,
     description,
-    keywords: keywords.join(', '),
+    keywords: Array.isArray(keywords) ? keywords.join(', ') : '',
     authors: [{ name: 'Sistema de Gestión de Comedor' }],
     creator: 'Sistema de Gestión de Comedor',
     publisher: 'Sistema de Gestión de Comedor',

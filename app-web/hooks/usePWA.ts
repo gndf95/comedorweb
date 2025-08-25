@@ -179,8 +179,12 @@ export function usePWA() {
     registration.active.postMessage({ type: 'CLEAR_CACHE' })
     
     // También limpiar localStorage y sessionStorage
-    localStorage.clear()
-    sessionStorage.clear()
+    if (typeof localStorage !== 'undefined') {
+      localStorage.clear()
+    }
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.clear()
+    }
     
     console.log('Cache cleared')
   }, [registration])

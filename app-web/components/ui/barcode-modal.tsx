@@ -15,7 +15,7 @@ interface BarcodeModalProps {
     codigo: string
     nombre: string
     apellidos: string
-    departamento?: string
+    departamento?: string | null
   }
 }
 

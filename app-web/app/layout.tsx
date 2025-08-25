@@ -9,7 +9,7 @@ import SEOProvider from '@/components/seo/SEOProvider'
 import PWAInstallPrompt from '@/components/seo/PWAInstallPrompt'
 import PWAUpdatePrompt from '@/components/seo/PWAUpdatePrompt'
 import ErrorTrackerProvider from '@/components/providers/ErrorTrackerProvider'
-import '@/lib/app-initializer' // Auto-inicializar optimizaciones
+import AppInitializerProvider from '@/components/providers/AppInitializerProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -36,19 +36,21 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ErrorTrackerProvider>
-          <AuthProvider>
-            <SEOProvider>
-              {children}
-              <PWAInstallPrompt />
-              <PWAUpdatePrompt />
-              <Toaster 
-                position="top-center"
-                expand={true}
-                richColors
-                closeButton
-              />
-            </SEOProvider>
-          </AuthProvider>
+          <AppInitializerProvider>
+            <AuthProvider>
+              <SEOProvider>
+                {children}
+                <PWAInstallPrompt />
+                <PWAUpdatePrompt />
+                <Toaster 
+                  position="top-center"
+                  expand={true}
+                  richColors
+                  closeButton
+                />
+              </SEOProvider>
+            </AuthProvider>
+          </AppInitializerProvider>
         </ErrorTrackerProvider>
       </body>
     </html>

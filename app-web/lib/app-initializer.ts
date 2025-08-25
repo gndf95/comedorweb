@@ -210,7 +210,9 @@ export class AppInitializer {
         cache: memoryCache.getStats()
       }
       
-      localStorage.setItem('app-final-stats', JSON.stringify(finalStats))
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('app-final-stats', JSON.stringify(finalStats))
+      }
     })
   }
 
@@ -225,16 +227,6 @@ export class AppInitializer {
   }
 }
 
-// Auto-inicializar cuando se carga el módulo
-if (typeof window !== 'undefined') {
-  // Esperar a que el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      AppInitializer.initialize()
-    })
-  } else {
-    AppInitializer.initialize()
-  }
-}
+// La inicialización se maneja desde AppInitializerProvider
 
 export default AppInitializer

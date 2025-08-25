@@ -153,7 +153,9 @@ class ErrorTracker {
     if (typeof window === 'undefined') return
 
     try {
-      localStorage.setItem('error-logs', JSON.stringify(this.errors.slice(0, 50)))
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('error-logs', JSON.stringify(this.errors.slice(0, 50)))
+      }
     } catch (err) {
       console.error('Failed to store errors:', err)
     }
@@ -163,9 +165,11 @@ class ErrorTracker {
     if (typeof window === 'undefined') return
 
     try {
-      const stored = localStorage.getItem('error-logs')
-      if (stored) {
-        this.errors = JSON.parse(stored)
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem('error-logs')
+        if (stored) {
+          this.errors = JSON.parse(stored)
+        }
       }
     } catch (err) {
       console.error('Failed to load stored errors:', err)
