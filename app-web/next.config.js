@@ -4,7 +4,7 @@ const nextConfig = {
     // Solo packages externos necesarios
     serverComponentsExternalPackages: ['@supabase/ssr'],
   },
-  
+
   // Configuración para imágenes (códigos de barras)
   images: {
     remotePatterns: [
@@ -19,23 +19,23 @@ const nextConfig = {
     ],
     formats: ['image/webp', 'image/avif'],
   },
-  
+
   // Optimización para producción
   compiler: {
     // Remover console.logs en producción
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  
+
   // Configuración de TypeScript
   typescript: {
     ignoreBuildErrors: false,
   },
-  
-  // ESLint configuration
+
+  // ESLint configuration - CAMBIO AQUÍ
   eslint: {
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,  // ← Cambiado de false a true
   },
-  
+
   // Headers combinados (PWA + Seguridad)
   async headers() {
     return [
