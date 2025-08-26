@@ -15,9 +15,12 @@ interface Usuario {
 }
 
 interface TurnoActual {
-  turno: string
+  id: string | null
+  turno?: string
   nombre: string
   activo: boolean
+  hora_inicio?: string
+  hora_fin?: string
 }
 
 type EstadoScaneo = 'idle' | 'processing' | 'success' | 'error' | 'already_scanned'
@@ -78,6 +81,7 @@ export default function ScannerUSB() {
       const response = await fetch('/api/turnos/actual')
       if (response.ok) {
         const data = await response.json()
+        console.log('Datos del turno actual recibidos:', data)
         setTurnoActual(data.turno || null)
       }
     } catch (error) {
@@ -166,7 +170,7 @@ export default function ScannerUSB() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           usuarioId: usuarioEncontrado.id,
-          turno: turnoActual.turno
+          turno: turnoActual.turno || turnoActual.nombre
         })
       })
 
@@ -190,7 +194,7 @@ export default function ScannerUSB() {
           codigo: usuarioEncontrado.codigo,
           nombre: usuarioEncontrado.nombre,
           tipo: usuarioEncontrado.tipo,
-          turno: turnoActual.turno,
+          turno: turnoActual.turno || turnoActual.nombre,
           dispositivo: 'KIOSCO_WEB',
           metodoEntrada: 'SCANNER_USB'
         })

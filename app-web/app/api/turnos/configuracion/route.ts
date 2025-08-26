@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    const { data: turnos, error } = await supabase
+    console.log('Obteniendo configuración de turnos...')
+    const { data: turnos, error } = await supabaseAdmin
       .from('turnos_config')
       .select('*')
       .order('hora_inicio')
+
+    console.log('Resultado query turnos_config:', { turnos, error })
 
     if (error) {
       console.error('Error obteniendo configuración de turnos:', error)

@@ -18,9 +18,11 @@ export async function GET() {
         .order('hora_inicio')
 
       if (!error && turnosDB && turnosDB.length > 0) {
+        console.log('Turnos obtenidos de la DB:', turnosDB)
         turnos = turnosDB.map(t => ({
-          id: t.id || t.turno,
-          nombre: t.descripcion || t.turno || t.nombre,
+          id: t.id.toString(),
+          nombre: t.descripcion || t.turno,
+          turno: t.turno,
           hora_inicio: t.hora_inicio,
           hora_fin: t.hora_fin,
           inicio_minutos: convertirHoraAMinutos(t.hora_inicio),
@@ -80,15 +82,19 @@ export async function GET() {
       const tiempoTranscurrido = minutosActuales - turnoActual.inicio_minutos
       const progreso = Math.max(0, Math.min(100, (tiempoTranscurrido / duracionTurno) * 100))
 
+      console.log('Turno actual encontrado:', turnoActual)
       return NextResponse.json({
-        id: turnoActual.id,
-        nombre: turnoActual.nombre,
-        hora_inicio: turnoActual.hora_inicio,
-        hora_fin: turnoActual.hora_fin,
-        activo: true,
-        progreso: progreso,
-        tiempo_restante_minutos: Math.max(0, turnoActual.fin_minutos - minutosActuales),
-        accesos_actual: 0
+        turno: {
+          id: turnoActual.id,
+          turno: turnoActual.turno || turnoActual.id,
+          nombre: turnoActual.nombre,
+          hora_inicio: turnoActual.hora_inicio,
+          hora_fin: turnoActual.hora_fin,
+          activo: true,
+          progreso: progreso,
+          tiempo_restante_minutos: Math.max(0, turnoActual.fin_minutos - minutosActuales),
+          accesos_actual: 0
+        }
       })
     } else {
       // No hay turno activo, determinar el próximo
@@ -100,29 +106,35 @@ export async function GET() {
         : (24 * 60) - minutosActuales + proximoTurno.inicio_minutos
 
       return NextResponse.json({
-        id: null,
-        nombre: 'Fuera de horario',
-        hora_inicio: null,
-        hora_fin: null,
-        activo: false,
-        progreso: 0,
-        proximo_turno: {
-          nombre: proximoTurno.nombre,
-          hora_inicio: proximoTurno.hora_inicio,
-          tiempo_hasta_inicio_minutos: tiempoHastaProximo
-        },
-        accesos_actual: 0
+        turno: {
+          id: null,
+          turno: null,
+          nombre: 'Fuera de horario',
+          hora_inicio: null,
+          hora_fin: null,
+          activo: false,
+          progreso: 0,
+          proximo_turno: {
+            nombre: proximoTurno.nombre,
+            hora_inicio: proximoTurno.hora_inicio,
+            tiempo_hasta_inicio_minutos: tiempoHastaProximo
+          },
+          accesos_actual: 0
+        }
       })
     }
   } catch (error) {
     console.error('Error obteniendo turno actual:', error)
     return NextResponse.json({ 
-      error: 'Error interno del servidor',
-      id: null,
-      nombre: 'Error',
-      activo: false,
-      progreso: 0,
-      accesos_actual: 0
+      turno: {
+        error: 'Error interno del servidor',
+        id: null,
+        turno: null,
+        nombre: 'Error',
+        activo: false,
+        progreso: 0,
+        accesos_actual: 0
+      }
     }, { status: 500 })
   }
 }

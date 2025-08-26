@@ -4,13 +4,15 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function PUT(request: NextRequest) {
   try {
     const turno = await request.json()
-    console.log('API recibió turno:', turno)
+    console.log('API actualizar - turno recibido:', turno)
+    console.log('¿Es nuevo turno?', turno.id.startsWith('temp_'))
 
     // Para turnos nuevos (con ID temporal), hacer insert
     // Para turnos existentes, hacer update
     let data, error
     
     if (turno.id.startsWith('temp_')) {
+      console.log('Insertando nuevo turno...')
       const { data: insertData, error: insertError } = await supabaseAdmin
         .from('turnos_config')
         .insert({
@@ -22,9 +24,11 @@ export async function PUT(request: NextRequest) {
         })
         .select()
       
+      console.log('Resultado INSERT:', { insertData, insertError })
       data = insertData
       error = insertError
     } else {
+      console.log('Actualizando turno existente, ID:', turno.id)
       const { data: updateData, error: updateError } = await supabaseAdmin
         .from('turnos_config')
         .update({
@@ -37,6 +41,7 @@ export async function PUT(request: NextRequest) {
         .eq('id', turno.id)
         .select()
       
+      console.log('Resultado UPDATE:', { updateData, updateError })
       data = updateData
       error = updateError
     }

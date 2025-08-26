@@ -39,8 +39,17 @@ export default function ConfiguracionTurnos({ onClose, onGuardado }: Configuraci
       const response = await fetch('/api/turnos/configuracion')
       const data = await response.json()
       
+      console.log('Datos recibidos del API:', data)
+      
       if (data.success) {
-        setTurnos(data.turnos)
+        // Convertir formato de tiempo de HH:MM:SS a HH:MM para los inputs
+        const turnosFormateados = data.turnos.map(turno => ({
+          ...turno,
+          hora_inicio: turno.hora_inicio?.substring(0, 5) || turno.hora_inicio,
+          hora_fin: turno.hora_fin?.substring(0, 5) || turno.hora_fin
+        }))
+        console.log('Turnos formateados:', turnosFormateados)
+        setTurnos(turnosFormateados)
       }
     } catch (error) {
       console.error('Error cargando turnos:', error)
@@ -91,13 +100,26 @@ export default function ConfiguracionTurnos({ onClose, onGuardado }: Configuraci
     }
 
     setGuardando(true)
-    console.log('Guardando turno:', turno)
+    
+    // Convertir formato de tiempo de HH:MM a HH:MM:SS para la base de datos
+    const turnoParaGuardar = {
+      ...turno,
+      hora_inicio: turno.hora_inicio.includes(':') && turno.hora_inicio.length === 5 
+        ? `${turno.hora_inicio}:00` 
+        : turno.hora_inicio,
+      hora_fin: turno.hora_fin.includes(':') && turno.hora_fin.length === 5 
+        ? `${turno.hora_fin}:00` 
+        : turno.hora_fin,
+    }
+    
+    console.log('Guardando turno original:', turno)
+    console.log('Guardando turno formateado:', turnoParaGuardar)
     
     try {
       const response = await fetch('/api/turnos/actualizar', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(turno)
+        body: JSON.stringify(turnoParaGuardar)
       })
 
       const data = await response.json()
