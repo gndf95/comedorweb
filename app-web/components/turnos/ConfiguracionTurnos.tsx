@@ -91,6 +91,8 @@ export default function ConfiguracionTurnos({ onClose, onGuardado }: Configuraci
     }
 
     setGuardando(true)
+    console.log('Guardando turno:', turno)
+    
     try {
       const response = await fetch('/api/turnos/actualizar', {
         method: 'PUT',
@@ -99,16 +101,21 @@ export default function ConfiguracionTurnos({ onClose, onGuardado }: Configuraci
       })
 
       const data = await response.json()
+      console.log('Respuesta de la API:', data)
       
       if (data.success) {
+        // Recargar la lista de turnos después de guardar
+        await cargarTurnos()
         setEditando(null)
         setErrors({...errors, [turno.id]: ''})
         mostrarMensaje('success', 'Turno guardado correctamente')
         onGuardado?.()
       } else {
+        console.error('Error en API:', data.error)
         mostrarMensaje('error', data.error || 'Error guardando turno')
       }
     } catch (error) {
+      console.error('Error de conexión:', error)
       mostrarMensaje('error', 'Error conectando con el servidor')
     } finally {
       setGuardando(false)
@@ -141,7 +148,7 @@ export default function ConfiguracionTurnos({ onClose, onGuardado }: Configuraci
   const agregarTurno = () => {
     const nuevoTurno: Turno = {
       id: `temp_${Date.now()}`,
-      turno: '',
+      turno: 'Nuevo Turno',
       hora_inicio: '08:00',
       hora_fin: '12:00',
       activo: true,
@@ -150,6 +157,8 @@ export default function ConfiguracionTurnos({ onClose, onGuardado }: Configuraci
 
     setTurnos(prev => [...prev, nuevoTurno])
     setEditando(nuevoTurno.id)
+    // Limpiar errores previos
+    setErrors({})
   }
 
   const actualizarTurno = (id: string, campo: keyof Turno, valor: any) => {

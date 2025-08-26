@@ -4,18 +4,42 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function PUT(request: NextRequest) {
   try {
     const turno = await request.json()
+    console.log('API recibió turno:', turno)
 
-    const { data, error } = await supabaseAdmin
-      .from('turnos_config')
-      .upsert({
-        id: turno.id.startsWith('temp_') ? undefined : turno.id, // Para nuevos turnos
-        turno: turno.turno,
-        hora_inicio: turno.hora_inicio,
-        hora_fin: turno.hora_fin,
-        activo: turno.activo,
-        descripcion: turno.descripcion
-      })
-      .select()
+    // Para turnos nuevos (con ID temporal), hacer insert
+    // Para turnos existentes, hacer update
+    let data, error
+    
+    if (turno.id.startsWith('temp_')) {
+      const { data: insertData, error: insertError } = await supabaseAdmin
+        .from('turnos_config')
+        .insert({
+          turno: turno.turno,
+          hora_inicio: turno.hora_inicio,
+          hora_fin: turno.hora_fin,
+          activo: turno.activo,
+          descripcion: turno.descripcion
+        })
+        .select()
+      
+      data = insertData
+      error = insertError
+    } else {
+      const { data: updateData, error: updateError } = await supabaseAdmin
+        .from('turnos_config')
+        .update({
+          turno: turno.turno,
+          hora_inicio: turno.hora_inicio,
+          hora_fin: turno.hora_fin,
+          activo: turno.activo,
+          descripcion: turno.descripcion
+        })
+        .eq('id', turno.id)
+        .select()
+      
+      data = updateData
+      error = updateError
+    }
 
     if (error) {
       return NextResponse.json({
