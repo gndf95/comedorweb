@@ -75,10 +75,10 @@ export function BulkBarcodePrint({ empleados }: BulkBarcodePrintProps) {
       page.className = 'print-page'
       page.style.cssText = `
         page-break-after: always;
-        padding: 20px;
+        padding: 12px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 6px;
         width: 100%;
       `
 
@@ -86,18 +86,20 @@ export function BulkBarcodePrint({ empleados }: BulkBarcodePrintProps) {
         const card = document.createElement('div')
         card.style.cssText = `
           border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 10px;
+          border-radius: 6px;
+          padding: 6px;
           text-align: center;
           background: white;
           page-break-inside: avoid;
+          max-width: 140px;
+          margin: 0 auto;
         `
 
         // Nombre del empleado si está habilitado
         if (includeNames) {
           const name = document.createElement('h4')
           name.textContent = `${empleado.nombre} ${empleado.apellidos}`
-          name.style.cssText = 'margin: 0 0 8px 0; font-size: 12px; font-weight: bold;'
+          name.style.cssText = 'margin: 0 0 4px 0; font-size: 10px; font-weight: bold; line-height: 1.2;'
           card.appendChild(name)
         }
 
@@ -105,30 +107,31 @@ export function BulkBarcodePrint({ empleados }: BulkBarcodePrintProps) {
         if (includeDepartment && empleado.departamento) {
           const dept = document.createElement('p')
           dept.textContent = empleado.departamento
-          dept.style.cssText = 'margin: 0 0 8px 0; font-size: 10px; color: #666;'
+          dept.style.cssText = 'margin: 0 0 4px 0; font-size: 8px; color: #666; line-height: 1;'
           card.appendChild(dept)
         }
 
         // Código de barras
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        svg.style.cssText = 'margin: 2px 0;'
         JsBarcode(svg, empleado.codigo, {
           format: 'CODE128',
-          width: barcodeSize.width,
-          height: barcodeSize.height,
+          width: Math.max(1.5, barcodeSize.width * 0.8),
+          height: Math.max(30, barcodeSize.height * 0.7),
           displayValue: true,
-          fontSize: 12,
+          fontSize: 10,
           textAlign: 'center',
           textPosition: 'bottom',
-          textMargin: 4,
+          textMargin: 2,
           background: '#ffffff',
           lineColor: '#000000'
         })
         card.appendChild(svg)
 
-        // Código en texto
+        // Código en texto (más pequeño)
         const code = document.createElement('p')
-        code.textContent = `Código: ${empleado.codigo}`
-        code.style.cssText = 'margin: 4px 0 0 0; font-size: 10px; font-family: monospace;'
+        code.textContent = empleado.codigo
+        code.style.cssText = 'margin: 2px 0 0 0; font-size: 8px; font-family: monospace; color: #666;'
         card.appendChild(code)
 
         page.appendChild(card)

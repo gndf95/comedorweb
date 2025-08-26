@@ -1,15 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 import GestionTurnos from '@/components/turnos/GestionTurnos'
 import ConfiguracionTurnos from '@/components/turnos/ConfiguracionTurnos'
 import ManejoExcepciones from '@/components/turnos/ManejoExcepciones'
 import NotificacionesTurnos from '@/components/notificaciones/NotificacionesTurnos'
-import { Clock, Settings, Shield, Bell } from 'lucide-react'
+import { Clock, Settings, Shield, Bell, ArrowLeft } from 'lucide-react'
 
 export default function TurnosAdminPage() {
   const [activeTab, setActiveTab] = useState('gestion')
+  const router = useRouter()
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -23,12 +26,27 @@ export default function TurnosAdminPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Administración de Turnos
-          </h1>
-          <p className="text-gray-600">
-            Gestione horarios, configuraciones y excepciones del sistema de comedor
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center space-x-4 mb-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push('/admin')}
+                  className="flex items-center space-x-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Volver al Admin</span>
+                </Button>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Administración de Turnos
+                </h1>
+              </div>
+              <p className="text-gray-600 ml-24">
+                Gestione horarios, configuraciones y excepciones del sistema de comedor
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Tabs de navegación */}

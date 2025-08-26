@@ -41,17 +41,16 @@ export function BarcodeModal({ isOpen, onClose, empleado }: BarcodeModalProps) {
         lineColor: '#000000'
       })
 
-      // Generar código de barras para impresión
+      // Generar código de barras para impresión (compacto)
       JsBarcode(printBarcodeRef.current, empleado.codigo, {
         format: 'CODE128',
-        width: 2,
-        height: 60,
+        width: 1.8,
+        height: 40,
         displayValue: true,
-        fontSize: 14,
+        fontSize: 10,
         textAlign: 'center',
         textPosition: 'bottom',
-        textMargin: 8,
-        fontOptions: 'bold',
+        textMargin: 2,
         background: '#ffffff',
         lineColor: '#000000'
       })
@@ -199,23 +198,41 @@ export function BarcodeModal({ isOpen, onClose, empleado }: BarcodeModalProps) {
                 {/* Área oculta para impresión */}
                 <div id="barcode-print-area" className="hidden">
                   <div style={{ 
-                    padding: '20px', 
+                    padding: '10px', 
                     textAlign: 'center',
-                    fontFamily: 'Arial, sans-serif'
+                    fontFamily: 'Arial, sans-serif',
+                    maxWidth: '200px',
+                    margin: '0 auto',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px'
                   }}>
-                    <h2 style={{ marginBottom: '10px' }}>
+                    <h3 style={{ 
+                      marginBottom: '4px', 
+                      fontSize: '12px', 
+                      fontWeight: 'bold',
+                      lineHeight: '1.2'
+                    }}>
                       {empleado.nombre} {empleado.apellidos}
-                    </h2>
+                    </h3>
                     {empleado.departamento && (
-                      <p style={{ marginBottom: '20px', color: '#666' }}>
+                      <p style={{ 
+                        marginBottom: '6px', 
+                        fontSize: '10px', 
+                        color: '#666',
+                        lineHeight: '1'
+                      }}>
                         {empleado.departamento}
                       </p>
                     )}
-                    <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ marginBottom: '4px', display: 'flex', justifyContent: 'center' }}>
                       <svg ref={printBarcodeRef}></svg>
                     </div>
-                    <p style={{ fontSize: '12px', color: '#666' }}>
-                      Sistema de Gestión de Comedor - Código: {empleado.codigo}
+                    <p style={{ 
+                      fontSize: '9px', 
+                      color: '#666',
+                      margin: '2px 0 0 0'
+                    }}>
+                      Código: {empleado.codigo}
                     </p>
                   </div>
                 </div>
