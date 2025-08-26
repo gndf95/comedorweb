@@ -35,6 +35,7 @@ export default function ScannerUSB() {
   const [mensaje, setMensaje] = useState('')
   const [ultimoEscaneo, setUltimoEscaneo] = useState<Date | null>(null)
   const [logs, setLogs] = useState<Array<{id: string, timestamp: Date, codigo: string, resultado: string}>>([])
+  const [debugInfo, setDebugInfo] = useState<string>('Inicializando...')
   
   const inputRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -59,9 +60,17 @@ export default function ScannerUSB() {
     return () => window.removeEventListener('click', handleWindowClick)
   }, [autoFocus])
 
-  // Obtener turno actual al cargar
+  // Obtener turno actual al cargar y refrescar cada 30 segundos
   useEffect(() => {
+    console.log('🚀 Componente montado, obteniendo turno...')
     obtenerTurnoActual()
+    
+    const interval = setInterval(() => {
+      console.log('🔄 Refrescando turno cada 30s...')
+      obtenerTurnoActual()
+    }, 30000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   // Crear contexto de audio para sonidos
@@ -78,14 +87,25 @@ export default function ScannerUSB() {
 
   const obtenerTurnoActual = async () => {
     try {
+      setDebugInfo('🔍 Solicitando turno actual...')
+      console.log('🔍 Solicitando turno actual...')
       const response = await fetch('/api/turnos/actual')
+      console.log('📡 Respuesta del API:', response.status, response.statusText)
+      
       if (response.ok) {
         const data = await response.json()
-        console.log('Datos del turno actual recibidos:', data)
+        console.log('📋 Datos del turno actual recibidos:', data)
+        console.log('🎯 Turno extraído:', data.turno)
+        console.log('✅ Estado activo?', data.turno?.activo)
+        setDebugInfo(`📋 Turno: ${data.turno?.nombre || 'null'} - Activo: ${data.turno?.activo}`)
         setTurnoActual(data.turno || null)
+      } else {
+        console.error('❌ Error en respuesta:', response.status)
+        setDebugInfo(`❌ Error: ${response.status}`)
       }
     } catch (error) {
-      console.error('Error obteniendo turno actual:', error)
+      console.error('💥 Error obteniendo turno actual:', error)
+      setDebugInfo(`💥 Error: ${error}`)
     }
   }
 
@@ -309,7 +329,11 @@ export default function ScannerUSB() {
               <Calendar className="w-8 h-8 text-blue-600" />
               <div>
                 <h2 className="text-xl font-bold">
-                  {turnoActual?.activo ? turnoActual.nombre : 'Sin turno activo'}
+                  {(() => {
+                    console.log('🖥️ Renderizando turno:', turnoActual)
+                    console.log('🖥️ ¿Activo?', turnoActual?.activo)
+                    return turnoActual?.activo ? turnoActual.nombre : 'Sin turno activo'
+                  })()}
                 </h2>
                 <p className="text-sm text-gray-600">
                   {new Date().toLocaleString('es-ES')}
@@ -387,9 +411,26 @@ export default function ScannerUSB() {
       )}
 
       {/* Indicador de foco para debugging */}
-      <div className="text-center text-xs text-gray-400">
-        Scanner USB listo • Foco automático {autoFocus ? 'ON' : 'OFF'} • Sonidos {soundEnabled ? 'ON' : 'OFF'}
-        {codigo && <span> • Código capturado: {codigo}</span>}
+      <div className="text-center text-xs text-gray-400 space-y-2">
+        <div>
+          Scanner USB listo • Foco automático {autoFocus ? 'ON' : 'OFF'} • Sonidos {soundEnabled ? 'ON' : 'OFF'}
+          {codigo && <span> • Código capturado: {codigo}</span>}
+        </div>
+        <div className="text-xs text-blue-600 font-mono">
+          DEBUG: {debugInfo}
+        </div>
+        <div className="text-xs text-purple-600 font-mono">
+          TURNO STATE: {JSON.stringify(turnoActual)}
+        </div>
+        <button 
+          onClick={() => {
+            console.log('🔄 Forzando actualización de turno...')
+            obtenerTurnoActual()
+          }}
+          className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+        >
+          🔄 Actualizar Turno (Debug)
+        </button>
       </div>
     </div>
   )
